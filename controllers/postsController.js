@@ -1,16 +1,34 @@
-const posts = require("../data/posts");
+// const posts = require("../data/posts");
+
+const db = require("../db"); // connessione a MySQL
 
 //visualizza tutti i post
+
+// const getAllPosts = (req, res) => {
+//   if (req.query.tag) {
+//     const filteredPosts = posts.filter((post) =>
+//       post.tags.includes(req.query.tag)
+//     );
+//     return res.json(filteredPosts);
+//   }
+
+//   res.json(posts);
+// };
 const getAllPosts = (req, res) => {
-  // Se viene passato un tag filtriamo i post
+  let sql = "SELECT * FROM posts"; // Query SQL
+
+  // filtro per tag
   if (req.query.tag) {
-    const filteredPosts = posts.filter((post) =>
-      post.tags.includes(req.query.tag)
-    );
-    return res.json(filteredPosts);
+    sql = `SELECT * FROM posts WHERE tags LIKE '%${req.query.tag}%'`;
   }
 
-  res.json(posts);
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("Errore durante il recupero dei post:", err);
+      return res.status(500).json({ error: "Errore interno al server" });
+    }
+    res.json(results);
+  });
 };
 
 //visualizza il post con id selezionato
