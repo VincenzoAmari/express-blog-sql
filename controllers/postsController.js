@@ -64,24 +64,48 @@ const getPostById = (req, res) => {
 };
 
 //crea il post
+
+////////////////////////////////////////
+
+// const createPost = (req, res) => {
+//   console.log("Dati ricevuti:", req.body);
+//   const { titolo, contenuto, immagine, tags } = req.body;
+
+//   if (!titolo || !contenuto || !immagine || !tags) {
+//     return res.status(400).json({ error: "Tutti i campi sono obbligatori" });
+//   }
+
+//   const newPost = {
+//     id: posts.length ? posts[posts.length - 1].id + 1 : 1,
+//     titolo,
+//     contenuto,
+//     immagine,
+//     tags,
+//   };
+
+//   posts.push(newPost);
+//   res.status(201).json(newPost);
+// };
+////////////////////////////////////////
+
 const createPost = (req, res) => {
-  console.log("Dati ricevuti:", req.body);
   const { titolo, contenuto, immagine, tags } = req.body;
 
   if (!titolo || !contenuto || !immagine || !tags) {
     return res.status(400).json({ error: "Tutti i campi sono obbligatori" });
   }
 
-  const newPost = {
-    id: posts.length ? posts[posts.length - 1].id + 1 : 1,
-    titolo,
-    contenuto,
-    immagine,
-    tags,
-  };
-
-  posts.push(newPost);
-  res.status(201).json(newPost);
+  const sql =
+    "INSERT INTO posts (titolo, contenuto, immagine, tags) VALUES (?, ?, ?, ?)";
+  db.query(sql, [titolo, contenuto, immagine, tags], (err, result) => {
+    if (err) {
+      console.error("Errore durante la creazione del post:", err);
+      return res.status(500).json({ error: "Errore interno al server" });
+    }
+    res
+      .status(201)
+      .json({ id: result.insertId, titolo, contenuto, immagine, tags });
+  });
 };
 
 //Aggiorna post
