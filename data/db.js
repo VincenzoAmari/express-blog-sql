@@ -13,7 +13,7 @@ db.connect((err) => {
     console.error("Errore di connessione al database:", err);
     return;
   }
-  console.log("✅ Connessione al database MySQL riuscita!");
+  console.log("Connessione al database MySQL riuscita!");
 });
 
 module.exports = db;

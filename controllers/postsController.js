@@ -1,6 +1,6 @@
 // const posts = require("../data/posts");
 
-const db = require("../db"); // connessione a MySQL
+const db = require("../data/db"); // connessione a MySQL
 
 //visualizza tutti i post
 
