@@ -109,21 +109,42 @@ const createPost = (req, res) => {
 };
 
 //Aggiorna post
+
+////////////////////////////////////////
+// const updatePost = (req, res) => {
+//   const id = parseInt(req.params.id);
+//   const post = posts.find((p) => p.id === id);
+
+//   if (!post) {
+//     return res.status(404).json({ error: "Post non trovato" });
+//   }
+
+//   const { titolo, contenuto, immagine, tags } = req.body;
+//   if (titolo) post.titolo = titolo;
+//   if (contenuto) post.contenuto = contenuto;
+//   if (immagine) post.immagine = immagine;
+//   if (tags) post.tags = tags;
+
+//   res.json(post);
+// };
+////////////////////////////////////////
+
 const updatePost = (req, res) => {
   const id = parseInt(req.params.id);
-  const post = posts.find((p) => p.id === id);
-
-  if (!post) {
-    return res.status(404).json({ error: "Post non trovato" });
-  }
-
   const { titolo, contenuto, immagine, tags } = req.body;
-  if (titolo) post.titolo = titolo;
-  if (contenuto) post.contenuto = contenuto;
-  if (immagine) post.immagine = immagine;
-  if (tags) post.tags = tags;
 
-  res.json(post);
+  const sql =
+    "UPDATE posts SET titolo = ?, contenuto = ?, immagine = ?, tags = ? WHERE id = ?";
+  db.query(sql, [titolo, contenuto, immagine, tags, id], (err, result) => {
+    if (err) {
+      console.error("Errore durante l'aggiornamento del post:", err);
+      return res.status(500).json({ error: "Errore interno al server" });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Post non trovato" });
+    }
+    res.json({ message: "Post aggiornato con successo" });
+  });
 };
 
 //cancella post con id selezionato
