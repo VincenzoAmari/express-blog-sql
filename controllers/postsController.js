@@ -4,6 +4,7 @@ const db = require("../db"); // connessione a MySQL
 
 //visualizza tutti i post
 
+////////////////////////////////////////
 // const getAllPosts = (req, res) => {
 //   if (req.query.tag) {
 //     const filteredPosts = posts.filter((post) =>
@@ -14,6 +15,8 @@ const db = require("../db"); // connessione a MySQL
 
 //   res.json(posts);
 // };
+////////////////////////////////////////
+
 const getAllPosts = (req, res) => {
   let sql = "SELECT * FROM posts"; // Query SQL
 
@@ -32,15 +35,32 @@ const getAllPosts = (req, res) => {
 };
 
 //visualizza il post con id selezionato
+
+////////////////////////////////////////
+// const getPostById = (req, res) => {
+//   const id = parseInt(req.params.id);
+//   const post = posts.find((post) => post.id === id);
+
+//   if (!post) {
+//     return res.status(404).json({ error: "Post non trovato" });
+//   }
+
+//   res.json(post);
+// };
+////////////////////////////////////////
+
 const getPostById = (req, res) => {
   const id = parseInt(req.params.id);
-  const post = posts.find((post) => post.id === id);
-
-  if (!post) {
-    return res.status(404).json({ error: "Post non trovato" });
-  }
-
-  res.json(post);
+  db.query("SELECT * FROM posts WHERE id = ?", [id], (err, results) => {
+    if (err) {
+      console.error("Errore durante il recupero del post:", err);
+      return res.status(500).json({ error: "Errore interno al server" });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ error: "Post non trovato" });
+    }
+    res.json(results[0]);
+  });
 };
 
 //crea il post
