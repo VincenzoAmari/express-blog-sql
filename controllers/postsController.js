@@ -148,23 +148,49 @@ const updatePost = (req, res) => {
 };
 
 //cancella post con id selezionato
+
+////////////////////////////////////////
+// const deletePost = (req, res) => {
+//   const id = parseInt(req.params.id);
+//   const index = posts.findIndex((post) => post.id === id);
+
+//   if (index === -1) {
+//     return res.status(404).json({ error: "Post non trovato" });
+//   }
+
+//   posts.splice(index, 1);
+//   console.log("Lista aggiornata:", posts);
+//   res.status(204).send();
+// };
+
+// module.exports = {
+//   getAllPosts,
+//   getPostById,
+//   deletePost,
+//   updatePost,
+//   createPost,
+// };
+////////////////////////////////////////
+
 const deletePost = (req, res) => {
   const id = parseInt(req.params.id);
-  const index = posts.findIndex((post) => post.id === id);
 
-  if (index === -1) {
-    return res.status(404).json({ error: "Post non trovato" });
-  }
-
-  posts.splice(index, 1);
-  console.log("Lista aggiornata:", posts);
-  res.status(204).send();
+  db.query("DELETE FROM posts WHERE id = ?", [id], (err, result) => {
+    if (err) {
+      console.error("Errore durante l'eliminazione del post:", err);
+      return res.status(500).json({ error: "Errore interno al server" });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Post non trovato" });
+    }
+    res.status(204).send(); // Nessun contenuto, eliminazione riuscita
+  });
 };
 
 module.exports = {
   getAllPosts,
   getPostById,
-  deletePost,
-  updatePost,
   createPost,
+  updatePost,
+  deletePost,
 };
